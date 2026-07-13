@@ -38,6 +38,10 @@ accounts) when you actively use those features.
    npx prisma migrate deploy
    ```
 
+   (If this is the very first install, run `npx prisma generate` first if
+   you see a "Can't resolve `@/generated/prisma/client`" error during the
+   next step — `npm install` normally handles this automatically.)
+
 3. Build and start the app:
 
    ```bash
