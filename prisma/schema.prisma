@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Settings {
+  id               String   @id @default(cuid())
+  openrouterApiKey String?
+  openrouterModel  String   @default("anthropic/claude-sonnet-5")
+  ayrshareApiKey   String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Profile {
+  id                String   @id @default(cuid())
+  niche             String
+  audience          String
+  voiceNotes        String
+  signaturePhrases   String
+  neverUsePhrases    String
+  offers            String
+  pillarEntertain   Int      @default(20)
+  pillarEducate     Int      @default(20)
+  pillarRelate      Int      @default(20)
+  pillarTrust       Int      @default(20)
+  pillarSell        Int      @default(20)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model SourcePost {
+  id              String   @id @default(cuid())
+  platform        String
+  externalId      String
+  rawText         String
+  mediaType       String
+  postedAt        DateTime
+  likes           Int      @default(0)
+  comments        Int      @default(0)
+  shares          Int      @default(0)
+  views           Int?
+  engagementRate  Float
+  pillar          String
+  createdAt       DateTime @default(now())
+
+  remixDrafts     RemixDraft[]
+
+  @@unique([platform, externalId])
+}
+
+model RemixDraft {
+  id             String      @id @default(cuid())
+  sourcePost     SourcePost? @relation(fields: [sourcePostId], references: [id])
+  sourcePostId   String?
+  hook           String
+  caption        String
+  pillar         String
+  platform       String
+  status         String      @default("pending")
+  ayrsharePostId String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
